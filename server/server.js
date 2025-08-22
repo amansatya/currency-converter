@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
+import { fetchCurrencies, convertCurrency } from "./utils/currencyAPI.js";
 
 dotenv.config();
 const app = express();
@@ -12,13 +13,28 @@ app.get("/", (req, res) => {
     res.send("Currency Converter Backend Running 🚀");
 });
 
-app.get("/api/test-env", (req, res) => {
-    res.json({
-        message: "Env test successful ✅",
-        port: process.env.PORT,
-        testKey: process.env.TEST_KEY,
-        currencyKey: process.env.CURRENCY_API_KEY ? "Key Loaded" : "Missing Key"
-    });
+app.get("/api/currencies", async (req, res) => {
+    try {
+        const currencies = await fetchCurrencies();
+        res.json(currencies);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch currencies" });
+    }
+});
+
+app.post("/api/convert", async (req, res) => {
+    const { from, to, amount } = req.body;
+
+    if (!from || !to || !amount) {
+        return res.status(400).json({ error: "from, to, and amount are required" });
+    }
+
+    try {
+        const result = await convertCurrency(from, to, amount);
+        res.json({ from, to, amount, result });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to convert currency" });
+    }
 });
 
 const PORT = process.env.PORT || 5000;
