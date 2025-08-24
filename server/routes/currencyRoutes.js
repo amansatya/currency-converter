@@ -5,8 +5,8 @@ const router = express.Router();
 
 router.get("/currencies", async (req, res) => {
     try {
-        const currencies = await fetchCurrencies(); // utility function
-        res.json(currencies);
+        const data = await fetchCurrencies();
+        res.json(data);
     } catch (err) {
         console.error("Error fetching currencies:", err.message);
         res.status(500).json({ error: "Failed to fetch currencies" });
@@ -17,13 +17,17 @@ router.post("/convert", async (req, res) => {
     try {
         const { from, to, amount } = req.body;
 
-        // Basic validation
-        if (!from || !to || !amount) {
-            return res.status(400).json({ error: "Please provide from, to, and amount" });
+        if (!from || !to || !amount || isNaN(amount)) {
+            return res.status(400).json({ error: "Please provide valid from, to, and numeric amount" });
         }
 
-        const convertedAmount = await convertCurrency(from, to, amount);
-        res.json({ result: convertedAmount });
+        const result = await convertCurrency(from, to, amount);
+
+        if (!result) {
+            return res.status(500).json({ error: "Conversion failed" });
+        }
+
+        res.json({ result });
     } catch (err) {
         console.error("Error converting currency:", err.message);
         res.status(500).json({ error: "Failed to convert currency" });
