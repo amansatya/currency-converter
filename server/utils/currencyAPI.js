@@ -34,8 +34,7 @@ export async function convertCurrency(from, to, amount) {
         }
 
         return {
-            result: response.data.conversion_result,
-            rate: response.data.conversion_rate,
+            result: response.data.conversion_result
         };
     } catch (error) {
         console.error("Error in convertCurrency:", error.response?.data || error.message);
