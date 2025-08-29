@@ -27,51 +27,36 @@ const Home = () => {
     };
 
     return (
-        <div className="h-screen w-full grid grid-cols-1 lg:grid-cols-2">
-            <div
-                className="hidden lg:block bg-cover bg-center"
-                style={{ backgroundImage: `url(https://flagcdn.com/us.svg)` }}
-            ></div>
+        <div className="h-screen w-full bg-gradient-to-br from-yellow-300 via-amber-500 to-orange-700 flex items-center justify-center p-4">
+            <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md text-center">
+                <h1 className="text-2xl font-bold mb-6 text-gray-800">
+                    💸 Currency Converter
+                </h1>
 
-            <div
-                className="hidden lg:block bg-cover bg-center"
-                style={{ backgroundImage: `url(https://flagcdn.com/in.svg)` }}
-            ></div>
-
-            <div className="absolute inset-0 flex items-center justify-center p-4">
-                <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md text-center">
-                    <h1 className="text-2xl font-bold mb-6 text-gray-800">
-                        💸 Currency Converter
-                    </h1>
-
-                    <div className="flex gap-4 mb-4">
-                        <CurrencySelector
-                            label="From"
-                            value={fromCurrency}
-                            onChange={setFromCurrency}
-                        />
-                        <CurrencySelector
-                            label="To"
-                            value={toCurrency}
-                            onChange={setToCurrency}
-                        />
-                    </div>
-
-                    <AmountInput value={amount} onChange={setAmount} />
-
-                    <ConvertButton onClick={handleConvert} />
-
-                    {loading && <Loader />}
-
-                    {result && !loading && (
-                        <ResultCard
-                            from={result.from}
-                            to={result.to}
-                            amount={result.amount}
-                            converted={result.converted}
-                        />
-                    )}
+                <div className="flex gap-4 mb-4">
+                    <CurrencySelector
+                        label="From"
+                        value={fromCurrency}
+                        onChange={setFromCurrency}
+                    />
+                    <CurrencySelector
+                        label="To"
+                        value={toCurrency}
+                        onChange={setToCurrency}
+                    />
                 </div>
+
+                <AmountInput value={amount} onChange={setAmount} />
+                <ConvertButton onClick={handleConvert} />
+                {loading && <Loader />}
+                {result && !loading && (
+                    <ResultCard
+                        from={result.from}
+                        to={result.to}
+                        amount={result.amount}
+                        converted={result.converted}
+                    />
+                )}
             </div>
         </div>
     );
