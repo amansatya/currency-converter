@@ -8,7 +8,7 @@ const api = axios.create({
 export const getCurrencies = async () => {
     try {
         const response = await api.get("/currencies");
-        return response.data; // expected: array of currency codes
+        return response.data;
     } catch (error) {
         console.error("Error fetching currencies:", error.message);
         throw new Error(
@@ -21,7 +21,7 @@ export const getCurrencies = async () => {
 export const convertCurrency = async (from, to, amount) => {
     try {
         const response = await api.post("/convert", { from, to, amount });
-        return response.data; // expected: { result: number, from, to }
+        return response.data;
     } catch (error) {
         console.error("Error converting currency:", error.message);
         throw new Error(
