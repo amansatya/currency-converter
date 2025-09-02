@@ -21,7 +21,7 @@ export const getCurrencies = async () => {
 export const convertCurrency = async (from, to, amount) => {
     try {
         const response = await api.post("/convert", { from, to, amount });
-        return response.data;
+        return response.data.result;
     } catch (error) {
         console.error("Error converting currency:", error.message);
         throw new Error(

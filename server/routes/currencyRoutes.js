@@ -36,7 +36,7 @@ router.post("/convert", async (req, res) => {
             return res.status(500).json({ error: "Conversion failed, please try again later." });
         }
 
-        res.json({ result });
+        res.json(result);
     } catch (error) {
         console.error("Error in conversion:", error.message);
 
