@@ -11,19 +11,23 @@ const Home = () => {
     const [fromCurrency, setFromCurrency] = useState("USD");
     const [toCurrency, setToCurrency] = useState("INR");
     const [amount, setAmount] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [result, setResult] = useState(null);
-    const [error, setError] = useState(null);
+
     const [currencyLoading, setCurrencyLoading] = useState(true);
+    const [currencyError, setCurrencyError] = useState(null);
+
+    const [conversionLoading, setConversionLoading] = useState(false);
+    const [conversionError, setConversionError] = useState(null);
+    const [result, setResult] = useState(null);
 
     useEffect(() => {
         const fetchCurrencies = async () => {
+            setCurrencyLoading(true);
             try {
                 const data = await getCurrencies();
-                setCurrencies(Object.entries(data));
-                setCurrencyLoading(false);
+                setCurrencies(data);
             } catch (err) {
-                setError("Failed to load currencies. Please try again.");
+                setCurrencyError("⚠️ Failed to load currencies. Please try again.");
+            } finally {
                 setCurrencyLoading(false);
             }
         };
@@ -32,8 +36,9 @@ const Home = () => {
 
     const handleConvert = async () => {
         if (!amount || !fromCurrency || !toCurrency) return;
-        setLoading(true);
-        setError(null);
+
+        setConversionLoading(true);
+        setConversionError(null);
         setResult(null);
 
         try {
@@ -45,9 +50,9 @@ const Home = () => {
                 converted,
             });
         } catch (err) {
-            setError("Conversion failed. Please try again later.");
+            setConversionError("⚠️ Conversion failed. Please try again later.");
         } finally {
-            setLoading(false);
+            setConversionLoading(false);
         }
     };
 
@@ -59,9 +64,11 @@ const Home = () => {
                 </h1>
 
                 {currencyLoading ? (
-                    <p className="text-sm text-gray-500">Loading currencies...</p>
-                ) : error ? (
-                    <p className="text-sm text-red-500">{error}</p>
+                    <div className="flex justify-center my-4">
+                        <Loader />
+                    </div>
+                ) : currencyError ? (
+                    <p className="text-sm text-red-500">{currencyError}</p>
                 ) : (
                     <div className="flex flex-col gap-4 mb-4">
                         <CurrencySelector
@@ -80,10 +87,26 @@ const Home = () => {
                 )}
 
                 <AmountInput value={amount} onChange={setAmount} />
-                <ConvertButton onClick={handleConvert} disabled={!amount || loading} />
 
-                {loading && <Loader />}
-                {result && !loading && (
+                <ConvertButton
+                    onClick={handleConvert}
+                    disabled={
+                        !amount || !fromCurrency || !toCurrency || conversionLoading
+                    }
+                    loading={conversionLoading}
+                />
+
+                {conversionLoading && (
+                    <div className="flex justify-center mt-4">
+                        <Loader />
+                    </div>
+                )}
+
+                {conversionError && (
+                    <p className="text-sm text-red-500 mt-2">{conversionError}</p>
+                )}
+
+                {result && !conversionLoading && (
                     <ResultCard
                         from={result.from}
                         to={result.to}

@@ -1,20 +1,24 @@
 import React from "react";
 
-const CurrencySelector = ({ label, value, onChange, options = [] }) => {
+const CurrencySelector = ({ label, value, onChange, options = {}, loading }) => {
     return (
         <div className="flex flex-col w-full">
             <label className="mb-1 text-sm font-medium text-gray-700">{label}</label>
             <select
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                className="p-2 border rounded-lg bg-white shadow-sm"
+                disabled={loading}
+                className="p-2 border rounded-lg bg-white shadow-sm disabled:bg-gray-100 disabled:text-gray-400"
             >
-                <option value="">Select currency</option>
-                {options.map(([code, currencyName]) => (
-                    <option key={code} value={code}>
-                        {code} - {currencyName}
-                    </option>
-                ))}
+                <option value="">
+                    {loading ? "Loading currencies..." : "Select currency"}
+                </option>
+                {!loading &&
+                    Object.entries(options).map(([code, currencyName]) => (
+                        <option key={code} value={code}>
+                            {code} - {currencyName}
+                        </option>
+                    ))}
             </select>
         </div>
     );
